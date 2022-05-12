@@ -1,0 +1,127 @@
+#encoding:utf-8
+from email import message
+
+
+try:
+    import os
+    from multiprocessing.pool import ThreadPool
+    import logging
+    logging.basicConfig(level=logging.INFO,format='%(message)s')
+    import Queue
+    import paramiko
+except Exception as e:
+    logging.info(e)
+    os._exit(6)
+users_passwds = []
+Is_True = False
+username_list=['root', "pocosin",'111', 'ems', 'oracle', 'sifang', 'sunri', 'tx', 'ut', 'ut1', 'd5000', 'pi3000', 'pi6000', 'oms', 'dky', 'sysadmin', 'netadmin', 'secadmin', 'audadmin', 'mysql', 'dmdbms', 'dmdba', 'kingbase', 'rock', 'rocky', 'h3c', 'h3capadmin', 'superadmin', 'huawei', 'admin', 'administrator', 'anonymous', 'backup', 'ftp', 'guest', 'linux', 'postgres', 'sys', 'system', 'temp', 'test', 'test1', 'tomcat', 'upload', 'user', 'user1', 'web', 'www']
+password_list=['user','@123qwe!@#QWE', 'test', 'root', 'toor', 'su-4000361515', 'sf-4000361515', 'oracle', 'nr2000', 'root123', 'qwer1234', 'narins2000', 'Nems-9700', 'Abc123', 'Nroot-9700', '123456', 'ut', 'UT#2015', 'UT#20150306', 'Ab#20150306', 'q+12345', 'Admin@322', 'ytdf_000', 'ytdf000', '111111', 'sysadmin', 'secadmin', 'audadmin', 'netadmin', 'd5000', 'sysadm', 'netadm', 'secadm', 'audadm', 'dmdbms', 'dmdba', 'kingbase', 'R0ck9', 'pi3000', 'pi6000', 'open3000', 'oms', 'dky', 'rock', 'rocky', 'h3c', 'h3capadmin', 'superadmin', 'huawei', 'DEL.123.com', 'Passw0rd', 'qweasdzxc', 'admin123!@#', 'admin', 'admin123', 'admin@123', 'admin#123', 'password', '12345', '1234', '123', 'qwerty', 'test', '1q2w3e4r', '1qaz2wsx', 'qazwsx', '123qwe', '123qaz', '0000', '1234567', '123456qwerty', 'password123', '12345678', '1q2w3e', 'okmnji', 'test123', '123456789', 'postgres', 'q1w2e3r4', 'redhat',  'mysql', 'apache']
+# username_list=['root']
+# password_list = ['@123qwe!@#QWE','root','user','su-4000361515','sf-4000361515','oracle','nr2000','root123','qwer1234','123456','root','narins2000','Nems-9700','Abc123','Nroot-9700','123456','ut','UT#2015','UT#20150306','Ab#20150306','q+12345','Admin@322','ytdf_000','ytdf000','111111''ftp','Passw0rd','admin123','admin888','administrator','administrator123','ftppass','password','12345','1234','123','qwerty','test','1q2w3e4r','1qaz2wsx','qazwsx','123qwe','123qaz','0','1234567','123456qwerty','password123','12345678','1q2w3e','okmnji','test123','123456789','q1w2e3r4','mysql','web']
+queues = Queue.Queue(len(username_list)*len(password_list))
+for user in username_list:
+    for passwd in password_list:
+        queues.put({user:passwd})
+        
+def check(ip,port):
+    while not queues.empty():
+        try:
+            global Is_True,users_passwds
+            user_passwd = queues.get(False)
+        except Exception as e:
+            return
+        try:
+            logging.info("user:{}, passwd: {}".format(user_passwd.keys()[0],user_passwd.values()[0]))
+            ssh = paramiko.SSHClient()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            ssh.connect(ip,port,user_passwd.keys()[0],user_passwd.values()[0],timeout=3,allow_agent=False, banner_timeout=200)
+
+<<<<<<< .mine
+            ssh.close()
+            users_passwds.append({user_passwd.keys()[0]:user_passwd.values()[0]})
+||||||| .r534
+        ssh.close()
+        # logging.info("[+] {} find ssh weak passwd".format(ip))
+        Is_True =True
+        queues.queue.clear()
+    except Exception as e:
+        logging.info(e)
+        ssh.close()
+        pass
+=======
+        ssh.close()
+        logging.info("[+] {} find ssh weak passwd  user : {} , passwd : {}".format(ip,user_passwd.keys()[0],user_passwd.values()[0]))
+        Is_True =True
+        queues.queue.clear()
+    except Exception as e:
+        logging.info(e)
+        ssh.close()
+        pass
+>>>>>>> .r660
+
+            Is_True =True
+        except Exception as e:
+            # logging.info(e)
+            if "SSHException" in str(e):
+                queues.put(user_passwd)
+            ssh.close()
+            pass
+def main(ip,port):
+<<<<<<< .mine
+    threadIP = ThreadPool(7)
+    for threadId in range(7):
+        threadIP.apply_async(check,args=(ip,port))
+    threadIP.close()
+    threadIP.join()
+    
+
+
+||||||| .r534
+    threadi = []
+    while 1:
+        if threading.active_count()<=1:
+            try:
+                ssh_threads = threading.Thread(target=check,args=(ip,port))
+                ssh_threads.setDaemon(True)
+                ssh_threads.start()
+                threadi.append(ssh_threads)
+                if (queues.empty()==True) or (Is_True==True):
+                    break
+            except:
+                pass
+    for i in range(len(threadi)):
+        threadi[i].join(3)
+=======
+    threadi = []
+    while 1:
+        if threading.active_count()<=10:
+            try:
+                ssh_threads = threading.Thread(target=check,args=(ip,port))
+                ssh_threads.setDaemon(True)
+                ssh_threads.start()
+                threadi.append(ssh_threads)
+                if (queues.empty()==True) or (Is_True==True):
+                    break
+            except:
+                pass
+    for i in range(len(threadi)):
+        threadi[i].join(3)
+>>>>>>> .r660
+    if Is_True == True:
+<<<<<<< .mine
+        logging.info("[+] {} find ssh weak passwd user_passedd : {}".format(ip,users_passwds))
+||||||| .r534
+        logging.info("[+] {} find ssh weak passwd".format(ip))
+=======
+        # logging.info("[+] {} find ssh weak passwd".format(ip))
+>>>>>>> .r660
+        os._exit(1)
+    logging.info("[-] {} do not found ssh weak passwd".format(ip))
+    os._exit(2)
+if __name__ == "__main__":
+    # while queues.empty()!= True:
+    #     print(queues.get())
+    import sys
+    ip = sys.argv[1]
+    port = sys.argv[2]
+    main(ip,int(port))

@@ -1,0 +1,12 @@
+administrator
+admin
+sysadmin
+netadmin
+secadmin
+audadmin
+test
+user
+manager
+webadmin
+guest
+db2admin
