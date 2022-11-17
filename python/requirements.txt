@@ -1,5 +1,9 @@
 pysmb
 pymysql
 pyOpenSSL==19.0.0
+paramiko==2.4.1
 cryptography==2.4.2
-requests
+requests==2.22.0
+impacket
+docker
+BeautifulSoup

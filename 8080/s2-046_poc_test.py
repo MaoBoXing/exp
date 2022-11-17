@@ -1,8 +1,11 @@
+#encoding:utf-8
 try:
     import sys, socket,os,logging
-except:
+except Exception as e:
+    logging.info("[*] {}".format(e))
     os._exit(6)
 logging.basicConfig(level=logging.INFO,format='%(message)s')
+
 class VulTest:
     def __init__(self, ip, port):
         self.ip = ip
@@ -30,27 +33,27 @@ Content-Length: %d
         # with socket.create_connection((self.ip, str(self.port)), timeout=5) as conn:
         try:
             conn = socket.create_connection((self.ip, str(self.port)), timeout=3)
-        except:
+        except Exception as e:
+            logging.info("[*] {} ".format(e))
             os._exit(4)
-        conn.send(p + q)
-        req = conn.recv(10240).decode()
-        # print req
-        if ('uid' in req):
-            logging.info('[+] Found S2-046 in ' + self.ip + ':' + self.port)
-            os._exit(1)
-        else:
-            logging.info('[-] S2-046 Not Found in ' + self.ip + ':' + self.port)
-            os._exit(2)
-
+        try:
+            conn.send(p + q)
+            req = conn.recv(10240)
+            # print req
+            if (b'uid' in req):
+                logging.info('[+] Found S2-046 in ' + self.ip + ':' + self.port)
+                os._exit(1)
+            else:
+                logging.info('[-] S2-046 Not Found in ' + self.ip + ':' + self.port)
+                os._exit(2)
+        except Exception as e:
+            logging.info("[*] {}".format(e))
+            os._exit(3)
 
 if __name__ == '__main__':
     ip = sys.argv[1]
     port = sys.argv[2]
     # url = '192.168.136.130'
     test = VulTest(ip, port)
-    try:
-        test.Test()
-    except:
-        os._exit(3)
-
-
+    
+    test.Test()

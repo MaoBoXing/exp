@@ -19,20 +19,24 @@ def check(ip,port):
         return 4
     try:
         s.send(binascii.a2b_hex(data))
-        time.sleep(0.1)
-        get = s.recv(4096)
-        if b"X.Org" in get:
-            logging.info("[+] {} find x11 unauthorized".format(ip))
-            return 1
-        logging.info("[-] {} do not found x11 unauthorized".format(ip))
-        return 2
+        get = binascii.b2a_hex(s.recv(4096))
+        if get:
+            succeed = get[:2]
+            if succeed == '01':
+                logging.info("[+] find x11 unauthorized")
+                os._exit(1)
+            else:
+                logging.info("[-] do not found x11 unauthorized")
+                os._exit(2)
+        else:
+            logging.info("[-] do not found x11 unauthorized")
+            os._exit(2)
     except Exception as e:
         logging.info("[*] Something Error!!")
-        return 3
+        os._exit(3)
 
 def main(ip,port):
     get =  check(ip,port)
-    os._exit(get)
 if __name__ == "__main__":
     import sys
     ip = sys.argv[1]

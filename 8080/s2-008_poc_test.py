@@ -29,6 +29,7 @@ class VulTest:
                     os._exit(1)
             except Exception as e:
                 print(e)
+                logging.info("[-] time out")
                 os.exit(4)
         logging.info('[-] S2-008 Not Found in ' + self.ip)
         os._exit(2)

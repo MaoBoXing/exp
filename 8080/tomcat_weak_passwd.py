@@ -30,10 +30,14 @@ def check_path(ip,port):
     targets = "http://" + ip +":" + port
     paths = ["/manager/status","/manager/html","/admin/j_security_check"]
     for path in paths:
-        resp = requests.get((targets+path),timeout=2)
-        if resp.status_code == 401:
-            return path
-
+        try:
+            resp = requests.get((targets+path),timeout=2,verify=False)
+            if resp.status_code == 401:
+                return path
+        except Exception as e:
+            pass
+    logging.info("[-] {} do not found tomcat weak passwd".format(ip))
+    os._exit(2)
 def cheek_tomcat(ip,port,path):
     global is_true,find_user_passw
     url = "http://"+ip + ":" + port + path
@@ -50,7 +54,7 @@ def cheek_tomcat(ip,port,path):
         'Authorization': 'Basic %s' % basic
         }
         try:
-            req = requests.get(url, headers=headers, timeout=5)
+            req = requests.get(url, headers=headers, timeout=5,verify=False)
             if req.status_code != 401:
                 is_true =True
                 find_user_passw.append(base64.b64decode(basic.encode("utf-8")).decode("utf-8"))

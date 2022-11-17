@@ -14,6 +14,7 @@ class VulTest:
         try:
             req = requests.get(self.url + '?id=%25%7B256*-256%7D',timeout=3)
         except:
+            logging.info("[-] time out")
             os._exit(4)
         #print req.text
         if ('-65536' in req.text):

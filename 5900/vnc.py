@@ -5,6 +5,7 @@ try:
     import binascii
     import time
     import logging
+    import re
 except:
     os._exit(6)
 
@@ -22,12 +23,16 @@ def check(ip,port):
         s.send(binascii.a2b_hex(data))
         time.sleep(1)
         get = s.recv(4096)
-        if binascii.a2b_hex(b'00000001') in get:
-            logging.info("[+] {} find vnc unauthorized".format(ip))
-            return 1
+        version = re.search("RFB.00(.).00(.)",get)
+        vnc_version = float(version.group(1) + '.'+version.group(2))
+        if vnc_version <=3.7:        
+            if binascii.a2b_hex(b'00000001') in get:
+                logging.info("[+] {} find vnc unauthorized".format(ip))
+                return 1
         logging.info("[-] {} do not found vnc unauthorized".format(ip))    
         return 2
     except Exception as e:
+        print(e)
         logging.info("[*] Something Error!!")
         return 3
 

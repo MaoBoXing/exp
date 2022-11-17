@@ -24,6 +24,7 @@ class VulTest:
                     logging.info('[+] Found S2-009 in ' + url)
                     os._exit(1)
             except:
+                logging.info("[-] time out")
                 os._exit(4)
         logging.info('[-] S2-009 Not Found in ' + url)
         os._exit(2)

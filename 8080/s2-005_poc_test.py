@@ -22,6 +22,7 @@ def check(ip,port):
         try:
             s.connect((ip,port))
         except Exception as e:
+            logging.info("[-] time out")
             os._exit(4)
 
         s.send(binascii.a2b_hex(data1)+data+binascii.a2b_hex(data2))

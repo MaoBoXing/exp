@@ -1,5 +1,4 @@
 #encoding:utf-8
-from email import header
 
 
 try:

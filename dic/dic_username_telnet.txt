@@ -1,6 +1,4 @@
 root
-user
-root
 admin
 H3C
 111
@@ -23,3 +21,4 @@ audadmin
 guest
 ftp
 www
+user
