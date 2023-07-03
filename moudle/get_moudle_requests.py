@@ -7,14 +7,13 @@ except Exception as e:
     logging.info("[*]".format(e))
     os._exit(6)
 
-def check(ip,port):
+def main(url):
     
     payload = "                  "                                                      #填写payload
     try:
-        tar = "http://" + ip + ":" + port
-        req = requests.get(tar + payload,timeout=3,verify=False,allow_redirects=False)
+        req = requests.get(url + payload,timeout=3,verify=False,allow_redirects=False)
         if req.status_code == 200:                                                          #修改匹配返回代码
-            if ( b"     " in req.text ) and ( b"        " in req.text ) and ( b'        ' in req.text):          #填写匹配信息
+            if ( "     " in req.text ) and ( "        " in req.text ) and ( '        ' in req.text):          #填写匹配信息
                 logging.info(u"[+] {} find     ".format(ip))                                 #填写漏洞信息
                 os._exit(1)
 
@@ -30,6 +29,5 @@ def check(ip,port):
         os._exit(4)
 
 if __name__ == "__main__":
-    ip = sys.argv[1]
-    port = sys.argv[2]
-    check(ip,port)
+    url = sys.argv[1]
+    check(url)

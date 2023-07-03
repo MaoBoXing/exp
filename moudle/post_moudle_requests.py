@@ -7,18 +7,18 @@ except Exception as e:
     logging.info("[*] {}".format(e))
     os._exit(6)
 
-def check(ip,port):
-    target = "http://" + ip + ":" + port
+def check(url):
+    
     payload = "                 "                                   #填写payload
     header = {
         
     }                                                               #填写header头
     data = "        "                                               #填写data数据
     try:
-        req = requests.post(url=target+payload,headers=header,data=data,timeout=3,verify=False,allow_redirects=False)
+        req = requests.post(url+payload,headers=header,data=data,timeout=3,verify=False,allow_redirects=False)
 
         if req.status_code == 200:
-            if (b'    ' in req.text) and  (b'    ' in req.text) and (b'     ' in req.text):              #填写判断条件
+            if ('    ' in req.text) and  (''    ' in req.text) and ('     ' in req.text):              #填写判断条件
                 logging.info("[+] {} find            ".format(ip))                          #填写漏洞名
                 os._exit(1)
 
@@ -28,7 +28,6 @@ def check(ip,port):
         logging.info("[*] {}".format(e))
         os._exit(4)
 
-if __name__== "__main__":
-    ip = sys.argv[1]
-    port = sys.argv[2]
-    check(ip,port)
+if __name__ == "__main__":
+    url = sys.argv[1]
+    check(url)
